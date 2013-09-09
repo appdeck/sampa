@@ -37,10 +37,6 @@ Examples
 --------
 Examples of basic usage are located in the examples/ directory.
 
-Tests
-------
-To run the tests, you must install dependencies with `composer install --dev`
-
 Bugs and feature requests
 -------------------------
 
