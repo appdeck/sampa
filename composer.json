@@ -23,7 +23,9 @@
         "php": ">=5.3.0"
     },
 	"autoload": {
-		"psr-0": {"sampa\\": "appdeck/sampa/src/"}
+		"psr-0": {
+			"sampa": "src"
+		}
 	},
     "repositories": [
         {
