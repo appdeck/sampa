@@ -17,7 +17,6 @@ use sampa\Exception;
 
 final class Boss {
 	private $time;
-	private $log;
 	private $config;
 	private $boot = false;
 	private $lock = null;
@@ -46,12 +45,11 @@ final class Boss {
 	public function __destruct() {
 		if (is_resource($this->lock))
 			fclose($this->lock);
-		//$this->log->debug("{$_SERVER['REQUEST_METHOD']} {$_SERVER['REQUEST_URI']}?{$_SERVER['QUERY_STRING']} {$_SERVER['SERVER_PROTOCOL']}");
-		$this->log->debug('TIME: ' . Formater::msec(microtime(true) - $this->time));
-		$this->log->debug('RAM: ' . Formater::size(memory_get_peak_usage(true)));
+		printf("TIME: %s\n", Formater::msec(microtime(true) - $this->time));
+		printf("RAM: %s\n", Formater::size(memory_get_peak_usage(true)));
 	}
 
-	public function boot($config = null, $log = null) {
+	public function boot($config = null) {
 		//overrides the default config folder
 		if (!is_null($config)) {
 			$config = realpath($config);
@@ -61,18 +59,9 @@ final class Boss {
 				define('__CFG__', $config);
 			}
 		}
-		//overrides the default log folder
-		if (!is_null($log)) {
-			$log = realpath($log);
-			if ($log !== false) {
-				if (substr_compare($log, '/', -1, 1) != 0)
-					$log .= '/';
-				define('__LOG__', $log);
-			}
-		}
 		//defines the base path to framework
 		define('__SAMPA__', dirname(dirname(__FILE__)));
-		foreach (array('cfg', 'log', 'tpl') as $folder) {
+		foreach (array('cfg', 'tpl') as $folder) {
 			$key = '__' . strtoupper($folder) . '__';
 			$path = realpath(__SAMPA__ . DIRECTORY_SEPARATOR . $folder . DIRECTORY_SEPARATOR);
 			if ($path === false)
@@ -86,22 +75,14 @@ final class Boss {
 		$encoding = $this->config->read('framework/main/encoding', 'UTF-8');
 		mb_internal_encoding($encoding);
 		//sets the error display
-		if ($this->config->read('framework/main/debug', true))
-			ini_set('display_errors', 1);
-		else
-			ini_set('display_errors', 0);
-		error_reporting(-1);
-		//sets the general error handler
-		set_error_handler(array($this, 'logger'));
+		ini_set('display_errors', 1);
+		error_reporting(1);
 		//sets the proper include path for shared hosting
 		$include = $this->config->read('framework/main/include_path', '');
 		if (!empty($include))
 			set_include_path($include);
 		//sets the default timezone
 		date_default_timezone_set($this->config->read('framework/main/timezone', 'UTC'));
-		//loads the log handler
-		$logfile = __LOG__ . date('Ymd') . '-boss.log';
-		$this->log = new Log($logfile, $this->config->read('framework/log/level', Log::DISABLED), $this->config->read('framework/log/buffered', true));
 		$this->boot = true;
 	}
 
@@ -150,27 +131,6 @@ final class Boss {
 			default:
 				throw new Exception\Worker("Invalid operation '{$argv[2]}'");
 		}
-	}
-
-	public function logger($num, $str, $file, $line, $context) {
-		$msg = "{$str} in {$file}:{$line}";
-		switch ($num) {
-			case E_ERROR:
-			case E_USER_ERROR:
-				$this->log->error($msg);
-				break;
-			case E_WARNING:
-			case E_USER_WARNING:
-				$this->log->warning($msg);
-				break;
-			case E_NOTICE:
-			case E_USER_NOTICE:
-				$this->log->notice($msg);
-				break;
-			default:
-				$this->log->alert($msg);
-		}
-		return true;
 	}
 
 }
