@@ -1,0 +1,26 @@
+<?php
+/*
+*	configuration file
+*	------------------
+*
+*	environment-based configuration can be done as follow:
+*	$_sampa = array(
+*		'environment1' => array(
+*			...
+*		),
+*		...
+*		'environmentN' => array(
+*			...
+*		)
+*	);
+*/
+$_sampa = array(
+	/*
+	*	rewrite rules
+	*	-------------
+	*
+	*	these rules are applied before route processing.
+	*	format: 'regular expression' => 'rewrite expression'
+	*	example: '/^/res/([a-zA-Z0-9]+)-thumb\.png$/' => '/image/thumb/$1\.png'
+	*/
+);

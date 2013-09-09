@@ -1,0 +1,9 @@
+<template charset="utf-8" indentation="false">
+	<meta>
+		<title value="Hello world!" />
+		<viewport value="width=device-width, initial-scale=1.0" />
+	</meta>
+	<includes>
+		<css src="css/main.css" media="all" />
+	</includes>
+</template>

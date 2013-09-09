@@ -1,0 +1,44 @@
+<?php
+
+class autoload {
+	private $map;
+
+	public function __construct() {
+		$this->map = array(
+			'sampa\\Core' => __DIR__ . '/src/',
+			'sampa\\Exception' => __DIR__ . '/src/'
+		);
+	}
+
+	//https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-0.md
+	public function load_class($name) {
+		$name = ltrim($name, '\\');
+		$file  = '';
+		$namespace = '';
+		$pos = strrpos($name, '\\');
+		if ($pos !== false) {
+			$namespace = substr($name, 0, $pos);
+			$name = substr($name, ($pos + 1));
+			if (isset($this->map[$namespace]))
+				$file = $this->map[$namespace];
+			$file .= str_replace('\\', DIRECTORY_SEPARATOR, $namespace) . DIRECTORY_SEPARATOR;
+		}
+		$file .= str_replace('_', DIRECTORY_SEPARATOR, $name) . '.php';
+		require $file;
+	}
+
+	public function register($prepend = false) {
+		spl_autoload_register(array($this, 'load_class'), true, $prepend);
+	}
+
+	public function add($prefix, $path) {
+		$prefix = trim($prefix, '\\') . '\\';
+		$path = rtrim($path, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+		$map[$prefix] = $path;
+	}
+
+}
+
+$autoload = new autoload;
+$autoload->register();
+return $autoload;
