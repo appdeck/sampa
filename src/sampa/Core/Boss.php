@@ -19,19 +19,6 @@ final class Boss {
 	private $time;
 	private $config;
 	private $boot = false;
-	private $lock = null;
-
-	private function lock($name) {
-		$this->lock = fopen(sys_get_temp_dir() . DIRECTORY_SEPARATOR . "{$name}.lock", 'w');
-		if (is_resource($this->lock))
-			return flock($this->lock, LOCK_EX | LOCK_NB);
-		return false;
-	}
-
-	private function unlock() {
-		if (is_resource($this->lock))
-			flock($this->lock, LOCK_UN);
-	}
 
 	public function __construct($environment = null) {
 		$this->time = microtime(true);
@@ -43,8 +30,6 @@ final class Boss {
 	}
 
 	public function __destruct() {
-		if (is_resource($this->lock))
-			fclose($this->lock);
 		printf("TIME: %s\n", Formater::msec(microtime(true) - $this->time));
 		printf("RAM: %s\n", Formater::size(memory_get_peak_usage(true)));
 	}
@@ -102,8 +87,6 @@ final class Boss {
 			throw new Exception\Worker("Worker not found ({$class})");
 		switch ($argv[2]) {
 			case 'start':
-				if (!$this->lock($argv[1]))
-					exit;
 				echo 'worker started (' . date('d/m/Y H:i:s') . ")\n";
 				echo "worker name: {$argv[1]}\n";
 				$pid = getmypid();
@@ -116,11 +99,10 @@ final class Boss {
 				$time = (microtime(true) - $time);
 				echo 'worker finished (' . Formater::msec($time) . ")\n";
 				@unlink($pidf);
-				$this->unlock();
 				break;
 			case 'stop':
 				$pidf = sys_get_temp_dir() . DIRECTORY_SEPARATOR . "{$argv[1]}.pid";
-				if ((!$this->lock($argv[1])) && (is_file($pidf))) {
+				if (is_file($pidf)) {
 					echo "worker stop\n";
 					$pid = @file_get_contents($pidf);
 					echo "worker pid: {$pid}\n";
