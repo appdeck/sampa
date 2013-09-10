@@ -49,7 +49,7 @@ final class Boss {
 		printf("RAM: %s\n", Formater::size(memory_get_peak_usage(true)));
 	}
 
-	public function boot($config = null) {
+	public function boot($config = null, $log = null) {
 		//overrides the default config folder
 		if (!is_null($config)) {
 			$config = realpath($config);
@@ -59,9 +59,18 @@ final class Boss {
 				define('__CFG__', $config);
 			}
 		}
+		//overrides the default log folder
+		if (!is_null($log)) {
+			$log = realpath($log);
+			if ($log !== false) {
+				if (substr_compare($log, '/', -1, 1) != 0)
+					$log .= '/';
+				define('__LOG__', $log);
+			}
+		}
 		//defines the base path to framework
 		define('__SAMPA__', dirname(dirname(__FILE__)));
-		foreach (array('cfg', 'tpl') as $folder) {
+		foreach (array('cfg', 'log', 'tpl') as $folder) {
 			$key = '__' . strtoupper($folder) . '__';
 			$path = realpath(__SAMPA__ . DIRECTORY_SEPARATOR . $folder . DIRECTORY_SEPARATOR);
 			if ($path === false)
@@ -76,7 +85,7 @@ final class Boss {
 		mb_internal_encoding($encoding);
 		//sets the error display
 		ini_set('display_errors', 1);
-		error_reporting(1);
+		error_reporting(E_ALL);
 		//sets the proper include path for shared hosting
 		$include = $this->config->read('framework/main/include_path', '');
 		if (!empty($include))
