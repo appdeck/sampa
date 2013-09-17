@@ -34,7 +34,7 @@ final class Config {
 			$file = __CFG__ . "{$filename}.config.php";
 		else
 			$file = "./{$filename}.config.php";
-		return (is_file($filename));
+		return is_file($file);
 	}
 
 	public function load($filename) {
