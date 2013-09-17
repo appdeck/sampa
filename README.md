@@ -3,6 +3,7 @@ sampa
 
 lightweight, fast and easy to use php5 mvc framework
 
+[![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/appdeck/sampa/badges/quality-score.png?s=c9f09969cf01fb4f17994753a8fb191a870f8248)](https://scrutinizer-ci.com/g/appdeck/sampa/)
 [![Build Status](https://travis-ci.org/appdeck/sampa.png?branch=master)](https://travis-ci.org/appdeck/sampa)
 [![Latest Stable Version](https://poser.pugx.org/appdeck/sampa/v/stable.png)](https://packagist.org/packages/appdeck/sampa)
 [![Total Downloads](https://poser.pugx.org/appdeck/sampa/downloads.png)](https://packagist.org/packages/appdeck/sampa)

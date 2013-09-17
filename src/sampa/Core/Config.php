@@ -63,25 +63,24 @@ final class Config {
 	}
 
 	public function set_app($domain, $path) {
-		if (isset($this->config['framework']['app'])) {
-			if (isset($this->config['framework']['app']['domain'], $this->config['framework']['app']['web_path'])) {
-				if (($this->config['framework']['app']['domain'] === $domain) && 
-					(strncmp($path, $this->config['framework']['app']['web_path'], strlen($this->config['framework']['app']['web_path'])) == 0))
-					return true;
-				return false;
-			}
-			foreach ($this->config['framework']['app'] as $id => $app) {
-				if ((isset($app['domain'], $app['web_path'])) && ($app['domain'] === $domain) && 
-					(strncmp($path, $app['web_path'], strlen($app['web_path'])) == 0)) {
-					$this->config['framework']['app'] = $app;
-					if (!isset($this->config['framework']['app']['id']))
-						$this->config['framework']['app']['id'] = $id;
-					if (!isset($this->config['framework']['app']['path']))
-						$this->config['framework']['app']['path'] = $id;
-					return true;
-				}
-			}
+		if (empty($this->config['framework']['app']))
+			return false;
+		if (isset($this->config['framework']['app']['domain'], $this->config['framework']['app']['web_path'])) {
+			if (($this->config['framework']['app']['domain'] === $domain) && 
+				(strncmp($path, $this->config['framework']['app']['web_path'], strlen($this->config['framework']['app']['web_path'])) == 0))
+				return true;
+			return false;
 		}
+		foreach ($this->config['framework']['app'] as $id => $app)
+			if ((isset($app['domain'], $app['web_path'])) && ($app['domain'] === $domain) && 
+				(strncmp($path, $app['web_path'], strlen($app['web_path'])) == 0)) {
+				$this->config['framework']['app'] = $app;
+				if (!isset($this->config['framework']['app']['id']))
+					$this->config['framework']['app']['id'] = $id;
+				if (!isset($this->config['framework']['app']['path']))
+					$this->config['framework']['app']['path'] = $id;
+				return true;
+			}
 		return false;
 	}
 

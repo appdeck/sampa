@@ -147,7 +147,9 @@ final class Session {
 
 	//cleans session information
 	public function clean() {
-		$_SESSION = array();
+		$_SESSION = array(
+			'__sid' => $_SESSION['__sid']
+		);
 	}
 
 	//checks session timeout
@@ -187,6 +189,10 @@ final class Session {
 
 	public function keep_flash() {
 		$this->flash = false;
+	}
+
+	public function clean_flash() {
+		$_SESSION['__flash'] = array();
 	}
 
 	//gets session value
