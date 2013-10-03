@@ -13,6 +13,8 @@
 
 namespace sampa\Core;
 
+use sampa\Exception;
+
 class Controller {
 	//response dispatcher instance
 	protected $response;
