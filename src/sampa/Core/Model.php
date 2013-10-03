@@ -50,11 +50,7 @@ abstract class Model {
 				return $this->secure;
 			case 'sql':
 				$config = $this->get_db_config();
-<<<<<<< HEAD
 				$this->sql = new SQL($config['dsn'], $config['user'], $config['pass']);
-=======
-				$this->sql = new SQL($config['dsn'], $config['user']), $config['pass']);
->>>>>>> f298e293793356d4d3a71500ecdd2607adced375
 				return $this->sql;
 			default:
 				return null;
