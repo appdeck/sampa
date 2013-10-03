@@ -17,6 +17,17 @@ abstract class Model {
 	protected $config;
 	protected $log;
 
+	protected function get_db_config() {
+		$this->config->load('db');
+		$config = array(
+			'dsn' => $this->config->read('db/dsn', ''),
+			'user' => $this->config->read('db/user', ''),
+			'pass' => $this->config->read('db/pass', '')
+		);
+		$this->config->unload('db');
+		return $config;
+	}
+
 	final public function __construct(&$config, &$log) {
 		$this->config = $config;
 		$this->log = $log;
@@ -38,9 +49,8 @@ abstract class Model {
 				$this->secure = new Secure($this->config->read('framework/secure/seed', 'sampa-framework'));
 				return $this->secure;
 			case 'sql':
-				$this->config->load('db');
-				$this->sql = new SQL($this->config->read('db/dsn', ''), $this->config->read('db/user', ''), $this->config->read('db/pass', ''));
-				$this->config->unload('db');
+				$config = $this->get_db_config();
+				$this->sql = new SQL($config['dsn'], $config['user']), $config['pass']);
 				return $this->sql;
 			default:
 				return null;
