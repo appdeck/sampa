@@ -16,6 +16,14 @@ namespace sampa\Core;
 use sampa\Exception;
 
 final class Template {
+	const REGEX_Block = '/<!-- BEGIN ([a-zA-Z][a-zA-Z0-9_-]*) -->(.*?)<!-- END \1 -->/sm';
+	const REGEX_Comment = '/<!-- COMMENT -->.*?<!-- \/COMMENT -->\n?/sm';
+	const REGEX_i18n = '/\{\{@([a-zA-Z][a-zA-Z0-9._-]*)\}\}/';
+	const REGEX_i18nR = '/^\{\{@([a-zA-Z][a-zA-Z\._-]*)\}\}$/';
+	const REGEX_Include = '/<!-- INCLUDE ([a-zA-Z][a-zA-Z0-9\/._-]*) -->\n?/';
+	const REGEX_Placeholder = '/\{\{[a-zA-Z][a-zA-Z0-9_-]*\}\}/m';
+	const REGEX_Blockholder = '/\{\{block:[a-zA-Z][a-zA-Z0-9_-]*\}\}/m';
+
 	private $path;
 	private $cache = false;
 	private $base = null;
@@ -177,9 +185,9 @@ final class Template {
 			$value = htmlentities($value, ENT_QUOTES, $this->charset);
 		$pos = strrpos($placeholder, '.');
 		if ($pos === false) {
-			$this->blocks['__root__']['data'] = str_replace("{{$placeholder}}", $value, $this->blocks['__root__']['data']);
+			$this->blocks['__root__']['data'] = str_replace("{{{$placeholder}}}", $value, $this->blocks['__root__']['data']);
 			foreach ($this->js as &$js)
-				$js = str_replace("{{$placeholder}}", $value, $js);
+				$js = str_replace("{{{$placeholder}}}", $value, $js);
 		} else {
 			$blockname = substr($placeholder, 0, $pos);
 			$placeholder = substr($placeholder, ($pos + 1));
@@ -187,7 +195,7 @@ final class Template {
 			if ($block === false)
 				throw new Exception\Template("Block not found '{$blockname}'");
 			foreach ($block['ptr']['render'] as &$data)
-				$data = str_replace("{{$placeholder}}", $value, $data);
+				$data = str_replace("{{{$placeholder}}}", $value, $data);
 		}
 	}
 
@@ -216,14 +224,14 @@ final class Template {
 		$tmp = $this->build_blocks($block['ptr']['inner']);
 		if (count($tmp))
 			foreach ($tmp as $name => $inner)
-				$src = str_replace("{block:{$name}}", trim($inner), $src);
+				$src = str_replace("{{block:{$name}}}", trim($inner), $src);
 		foreach ($block['ptr']['inner'] as &$data)
 			$data['render'] = array();
 
 		foreach ($content as $placeholder => $value) {
 			if ($escape)
 				$value = htmlentities($value, ENT_QUOTES, $this->charset);
-			$src = str_replace("{{$placeholder}}", $value, $src);
+			$src = str_replace("{{{$placeholder}}}", $value, $src);
 		}
 		$this->clean_placeholders($src);
 		$block['ptr']['render'][] = $src;
@@ -297,19 +305,19 @@ final class Template {
 	}
 
 	private function parse_comments(&$var) {
-		$var = preg_replace('/<!-- COMMENT -->.*?<!-- \/COMMENT -->\n?/sm', '', $var);
+		$var = preg_replace(self::REGEX_Comment, '', $var);
 	}
 
 	private function parse_blocks(&$var, &$blocks) {
 		$blocks = array();
-		if (preg_match_all('/<!-- BEGIN ([a-zA-Z0-9_-]+) -->(.*?)<!-- END \1 -->/sm', $var, $matches)) {
+		if (preg_match_all(self::REGEX_Block, $var, $matches)) {
 			foreach ($matches[1] as $id => $block) {
 				$blocks[$block] = array(
 					'data' => $matches[2][$id],
 					'inner' => array(),
 					'render' => array()
 				);
-				$var = str_replace($matches[0][$id], "{block:{$block}}", $var);
+				$var = str_replace($matches[0][$id], "{{block:{$block}}}", $var);
 			}
 			foreach ($blocks as &$block)
 				$this->parse_blocks($block['data'], $block['inner']);
@@ -318,7 +326,7 @@ final class Template {
 
 	private function parse_includes(&$var, $parent) {
 		foreach (array('body', 'js') as $item)
-			if (preg_match_all('/<!-- INCLUDE ([a-zA-Z0-9\/._-]+) -->\n?/', $var[$item], $matches))
+			if (preg_match_all(self::REGEX_Include, $var[$item], $matches))
 				foreach ($matches[1] as $id => $file) {
 					if ($parent !== $file) {
 						$file = "{$this->path}{$file}";
@@ -342,9 +350,9 @@ final class Template {
 	private function build() {
 		$blocks = $this->build_blocks($this->blocks['__root__']['inner']);
 		foreach ($blocks as $placeholder => $content) {
-			$this->blocks['__root__']['data'] = str_replace("{block:{$placeholder}}", $content, $this->blocks['__root__']['data']);
+			$this->blocks['__root__']['data'] = str_replace("{{block:{$placeholder}}}", $content, $this->blocks['__root__']['data']);
 			foreach ($this->js as &$js)
-				$js = str_replace("{block:{$placeholder}}", $content, $js);
+				$js = str_replace("{{block:{$placeholder}}}", $content, $js);
 		}
 		$this->build_i18n($this->blocks['__root__']['data']);
 		foreach ($this->js as &$js)
@@ -365,7 +373,7 @@ final class Template {
 						if ($src === '')
 							$src = $block['data'];
 						foreach ($tmp as $placeholder => $content)
-							$src = str_replace("{block:{$placeholder}}", $content, $src);
+							$src = str_replace("{{block:{$placeholder}}}", $content, $src);
 					}
 					if (!empty($src))
 						$ret[$name] = $src;
@@ -377,13 +385,13 @@ final class Template {
 	}
 
 	private function build_i18n(&$var) {
-		if (preg_match_all('/{@([a-zA-Z0-9._-]+)}/', $var, $matches))
+		if (preg_match_all(self::REGEX_i18n, $var, $matches))
 			foreach ($matches[1] as $id) {
 				$i18n = $this->find_i18n($id);
 				if ($i18n == false)
 					throw new Exception\Template("i18n string not found ({$id})");
 				else
-					$var = str_replace("{@{$id}}", htmlentities($i18n, ENT_QUOTES, $this->charset), $var);
+					$var = str_replace("{{@{$id}}}", htmlentities($i18n, ENT_QUOTES, $this->charset), $var);
 			}
 	}
 
@@ -438,11 +446,11 @@ final class Template {
 	}
 
 	private function clean_placeholders(&$var) {
-		$var = preg_replace('/{[a-zA-Z0-9_-]+}/m', '', $var);
+		$var = preg_replace(self::REGEX_Placeholder, '', $var);
 	}
 
 	private function clean_blockholders(&$var) {
-		$var = preg_replace('/{block:[a-zA-Z0-9_-]+}/m', '', $var);
+		$var = preg_replace(self::REGEX_Blockholder, '', $var);
 	}
 
 	private function clean_blankspaces(&$var) {
@@ -565,7 +573,7 @@ final class Template {
 			if (isset($data['js']))
 				foreach ($data['js'] as $type => $files)
 					foreach ($files as $file)
-						if (((empty($this->includes['js']['head'])) || (!in_array($file, $this->includes['js']['head']))) && 
+						if (((empty($this->includes['js']['head'])) || (!in_array($file, $this->includes['js']['head']))) &&
 							((empty($this->includes['js']['body'])) || (!in_array($file, $this->includes['js']['body']))))
 							$this->includes['js'][$type][] = $file;
 		}
@@ -665,6 +673,8 @@ final class Template {
 			'js' => ''
 		);
 		$xml = simplexml_load_file($file, 'SimpleXMLElement', LIBXML_COMPACT | LIBXML_NOBLANKS | LIBXML_NOCDATA);
+		if ($xml === false)
+			throw new Exception\Template("Invalid XML file '{$file}'");
 		if (isset($xml['charset']))
 			$ret['properties']['charset'] = (string)$xml['charset'];
 		if (isset($xml['indentation']))
@@ -770,7 +780,10 @@ final class Template {
 	}
 
 	private function load_i18n($file) {
-		$json = json_decode(file_get_contents($file), true);
+		$data = file_get_contents($file);
+		if ($data === false)
+			return array();
+		$json = json_decode($data, true);
 		if (is_null($json))
 			return array();
 		return $json;
@@ -806,12 +819,12 @@ final class Template {
 				else if (isset($i18n[$path][$this->default_language]))
 					return $i18n[$path][$this->default_language];
 				else if (is_string($i18n[$path])) {
-					if (preg_match('/^\{@([a-zA-Z\._-]+)\}$/', $i18n[$path], $matches))
+					if (preg_match(self::REGEX_i18nR, $i18n[$path], $matches))
 						return $this->find_i18n($matches[1]);
 					return $i18n[$path];
 				}
 				return false;
-			} else if ((is_string($i18n)) && (preg_match('/^\{@([a-zA-Z\._-]+)\}$/', $i18n, $matches)))
+			} else if ((is_string($i18n)) && (preg_match(self::REGEX_i18nR, $i18n, $matches)))
 				return $this->find_i18n("{$matches[1]}.{$path}");
 			return false;
 		}
