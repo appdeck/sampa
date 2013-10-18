@@ -62,7 +62,7 @@ class Controller {
 	final protected function get_ip_address($no_proxy = false) {
 		if ($no_proxy)
 			return $_SERVER['REMOTE_ADDR'];
-		foreach (array('HTTP_CLIENT_IP', 'HTTP_X_FORWARDED_FOR', 'HTTP_X_FORWARDED', 'HTTP_X_CLUSTER_CLIENT_IP', 'HTTP_FORWARDED_FOR', 'HTTP_FORWARDED', 'REMOTE_ADDR') as $key)
+		foreach (array('HTTP_X_REAL_IP', 'HTTP_CLIENT_IP', 'HTTP_X_FORWARDED_FOR', 'HTTP_X_FORWARDED', 'HTTP_X_CLUSTER_CLIENT_IP', 'HTTP_FORWARDED_FOR', 'HTTP_FORWARDED', 'REMOTE_ADDR') as $key)
 			if (array_key_exists($key, $_SERVER) === true)
 				foreach (explode(',', $_SERVER[$key]) as $ip)
 					if (filter_var($ip, FILTER_VALIDATE_IP) !== false)
@@ -88,6 +88,8 @@ class Controller {
 		if ((!empty($_SERVER['HTTPS'])) && ((strtolower($_SERVER['HTTPS']) === 'on') || (intval($_SERVER['HTTPS']) == 1)))
 			return true;
 		if ((!empty($_SERVER['HTTP_HTTPS'])) && ((strtolower($_SERVER['HTTP_HTTPS']) === 'on') || (intval($_SERVER['HTTP_HTTPS']) == 1)))
+			return true;
+		if ((!empty($_SERVER['HTTP_X_FORWARDED_PROTO'])) && (strtolower($_SERVER['HTTP_X_FORWARDED_PROTO']) === 'https'))
 			return true;
 		if ((!empty($_SERVER['SERVER_PORT'])) && (intval($_SERVER['SERVER_PORT']) == 443))
 			return true;
