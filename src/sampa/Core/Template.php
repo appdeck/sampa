@@ -94,7 +94,26 @@ final class Template {
 			header("{$header}: {$value}");
 	}
 
-	public function render_body($display = false, $display_media = 'all') {
+	public function render_body() {
+		$this->build();
+		$this->parse_cleanup();
+		if ($this->indentation)
+			$bfr = $this->indent($this->blocks['__root__']['data'], 2);
+		else
+			$bfr = $this->blocks['__root__']['data'];
+		if (isset($this->includes['js']['body']))
+			foreach ($this->includes['js']['body'] as $src)
+				$bfr .= "		<script type=\"text/javascript\" src=\"{$src}\"></script>\n";
+		if (count($this->js)) {
+			$bfr .= "		<script type=\"text/javascript\">\n";
+			foreach ($this->js as $js)
+				$bfr .= $this->indent($js, 3);
+			$bfr .= "		</script>\n";
+		}
+		return $bfr;
+	}
+
+	public function render_html($display = false, $display_media = 'all') {
 		$bfr = "<!DOCTYPE html>\n";
 		if (is_null($this->language))
 			$bfr .= "<html lang=\"en-us\"";
@@ -145,21 +164,7 @@ final class Template {
 		if ((!is_null($this->override)) && (isset($this->override['body'])))
 			$bfr .= " {$this->override['body']}";
 		$bfr .= ">\n";
-		$this->build();
-		$this->parse_cleanup();
-		if ($this->indentation)
-			$bfr .= $this->indent($this->blocks['__root__']['data'], 2);
-		else
-			$bfr .= $this->blocks['__root__']['data'];
-		if (isset($this->includes['js']['body']))
-			foreach ($this->includes['js']['body'] as $src)
-				$bfr .= "		<script type=\"text/javascript\" src=\"{$src}\"></script>\n";
-		if (count($this->js)) {
-			$bfr .= "		<script type=\"text/javascript\">\n";
-			foreach ($this->js as $js)
-				$bfr .= $this->indent($js, 3);
-			$bfr .= "		</script>\n";
-		}
+		$bfr .= $this->render_body();
 		$bfr .= "	</body>\n";
 		$bfr .= "</html>\n";
 		if ($display)

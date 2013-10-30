@@ -91,6 +91,8 @@ class Controller {
 			return true;
 		if ((!empty($_SERVER['HTTP_X_FORWARDED_PROTO'])) && (strtolower($_SERVER['HTTP_X_FORWARDED_PROTO']) === 'https'))
 			return true;
+		if ((!empty($_SERVER['HTTP_X_FORWARDED_SSL'])) && ((strtolower($_SERVER['HTTP_X_FORWARDED_SSL']) === 'on') || (intval($_SERVER['HTTP_X_FORWARDED_SSL']) == 1)))
+			return true;
 		if ((!empty($_SERVER['SERVER_PORT'])) && (intval($_SERVER['SERVER_PORT']) == 443))
 			return true;
 		return false;

@@ -32,7 +32,7 @@ $ php composer.phar install
 
 Features
 --------
-- PSR-0 compliant for easy interoperability
+ - PSR-0 compliant for easy interoperability
 
 Examples
 --------
@@ -40,13 +40,11 @@ Examples of basic usage are located in the examples/ directory.
 
 Bugs and feature requests
 -------------------------
-
 Have a bug or a feature request? [Please open a new issue](https://github.com/appdeck/sampa/issues).
 Before opening any issue, please search for existing issues and read the [Issue Guidelines](https://github.com/necolas/issue-guidelines), written by [Nicolas Gallagher](https://github.com/necolas/).
 
 Versioning
 ----------
-
 sampa will be maintained under the Semantic Versioning guidelines as much as possible.
 
 Releases will be numbered with the following format:
@@ -63,7 +61,6 @@ For more information on SemVer, please visit [http://semver.org/](http://semver.
 
 Authors
 -------
-
 **Flávio Heleno**
 
 + [http://twitter.com/flavioheleno](http://twitter.com/flavioheleno)
@@ -75,5 +72,6 @@ Authors
 + [http://github.com/vcampitelli](http://github.com/vcampitelli)
 
 Copyright and license
+---------------------
 
 Copyright 2013 appdeck under [GPL-3.0](LICENSE).

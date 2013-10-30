@@ -30,7 +30,7 @@ abstract class View {
 	final public function render($media = 'all') {
 		if ((isset($this->tpl)) && (!is_null($this->response))) {
 			$this->response->headers = array_merge($this->response->headers, $this->tpl->render_headers(false));
-			$this->response->html($this->tpl->render_body(false, $media));
+			$this->response->html($this->tpl->render_html(false, $media));
 		} else
 			throw new Exception\View('Trying to render view without TEMPLATE and/or RESPONSE instances');
 	}
