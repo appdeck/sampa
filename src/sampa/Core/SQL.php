@@ -28,16 +28,18 @@ final class SQL {
 	*	@params string $dsn
 	*	@params string $user
 	*	@params string $pass
+	*	@params boolean $pool
 	*	@return void
 	*/
-	public function __construct($dsn, $user, $pass, $cache = false) {
+	public function __construct($dsn, $user, $pass, $pool = false) {
 		try {
 			$options = array(
 				\PDO::ATTR_EMULATE_PREPARES => false,
 				\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION
 			);
+			if ($pool)
+				$options[\PDO::ATTR_PERSISTENT] = true;
 			$this->pdo = new \PDO($dsn, $user, $pass, $options);
-			$this->cache_status = $cache;
 		} catch (\Exception $e) {
 			throw new Exception\DatabaseConnection($e->getMessage());
 		}

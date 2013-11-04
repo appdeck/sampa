@@ -22,7 +22,8 @@ abstract class Model {
 		$config = array(
 			'dsn' => $this->config->read('db/dsn', ''),
 			'user' => $this->config->read('db/user', ''),
-			'pass' => $this->config->read('db/pass', '')
+			'pass' => $this->config->read('db/pass', ''),
+			'pool' => $this->config->read('db/pool', false)
 		);
 		$this->config->unload('db');
 		return $config;
@@ -50,7 +51,7 @@ abstract class Model {
 				return $this->secure;
 			case 'sql':
 				$config = $this->get_db_config();
-				$this->sql = new SQL($config['dsn'], $config['user'], $config['pass']);
+				$this->sql = new SQL($config['dsn'], $config['user'], $config['pass'], $config['pool']);
 				return $this->sql;
 			default:
 				return null;

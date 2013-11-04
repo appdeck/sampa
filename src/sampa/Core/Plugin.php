@@ -32,7 +32,7 @@ class Plugin {
 				return $this->cache;
 			case 'sql':
 				$this->config->load('db');
-				$this->sql = new SQL($this->config->read('db/dsn', ''), $this->config->read('db/user', ''), $this->config->read('db/pass', ''));
+				$this->sql = new SQL($this->config->read('db/dsn', ''), $this->config->read('db/user', ''), $this->config->read('db/pass', ''), $this->config->read('db/pool', false));
 				$this->config->unload('db');
 				return $this->sql;
 			case 'secure':

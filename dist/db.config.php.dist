@@ -22,8 +22,11 @@ $_sampa = array(
 	*	dsn: data source name according to PDO's documentation
 	*	user: username for the dsn string
 	*	pass: password for the dsn string
+	*	pool: enable/disable connection pooling to reduce
+	*		connection overhead
 	*/
 	'dsn' => '',
 	'user' => '',
-	'pass' => ''
+	'pass' => '',
+	'pool' => false
 );
