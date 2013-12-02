@@ -151,7 +151,7 @@ final class SQL {
 				$this->bind($markers);
 			return $this->statement->execute();
 		} catch (\Exception $e) {
-			throw new Exception\DatabaseQuery($e->getMessage());
+			throw new Exception\DatabaseQuery(sprintf('%s (%s)', $e->getMessage(), $sql));
 		}
 	}
 
@@ -186,7 +186,7 @@ final class SQL {
 			}
 			return $flag;
 		} catch (\Exception $e) {
-			throw new Exception\DatabaseQuery($e->getMessage());
+			throw new Exception\DatabaseQuery(sprintf('%s (%s)', $e->getMessage(), $sql));
 		}
 	}
 
@@ -200,7 +200,7 @@ final class SQL {
 		try {
 			return $this->pdo->exec($sql);
 		} catch (\Exception $e) {
-			throw new Exception\DatabaseQuery($e->getMessage());
+			throw new Exception\DatabaseQuery(sprintf('%s (%s)', $e->getMessage(), $sql));
 		}
 	}
 
