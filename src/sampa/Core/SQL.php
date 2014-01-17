@@ -67,6 +67,15 @@ final class SQL {
 	}
 
 	/**
+	*	Returns the current transaction block state
+	*
+	*	@return boolean
+	*/
+	public function in_transaction() {
+		return $this->pdo->inTransaction();
+	}
+
+	/**
 	*	Commits a transaction block
 	*
 	*	@return boolean
