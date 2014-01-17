@@ -142,7 +142,7 @@ final class Template {
 			$this->build_i18n($value);
 			$bfr .= "		<meta name=\"{$key}\" content=\"{$value}\">\n";
 		}
-		if ((!is_null($this->base)) && ($this->base))
+		if (!empty($this->base))
 			$bfr .= "		<base href=\"{$this->base}\">\n";
 		if (isset($favicon))
 			$bfr .= "		<link rel=\"icon\" type=\"image/x-icon\" href=\"{$favicon}\">\n";

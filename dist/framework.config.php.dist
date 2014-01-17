@@ -37,26 +37,15 @@ $_sampa = array(
 	*	rest: define when the application should behave as a restful application or not
 	*		restfull applications use the HTTP request method as action name
 	*	templates: path to templates folder
+	*	base: setup for <base> tag
 	*/
 	'app' => array(
 		'default_module' => 'main',
 		'domain' => 'localhost',
 		'web_path' => '/',
 		'rest' => false,
-		'templates' => __DIR__ . '/template'
-	),
-	/*
-	*	base configuration
-	*	------------------
-	*	setup for <base /> tag.
-	*	can be omitted to use application's domain/web_path.
-	*
-	*	domain: a FQDN (e.g. example.com)
-	*	path: relative path to files (e.g. /)
-	*/
-	'base' => array(
-		'domain' => 'localhost',
-		'path' => '/'
+		'templates' => __DIR__ . '/template',
+		'base' => ''
 	),
 	/*
 	*	cache configuration

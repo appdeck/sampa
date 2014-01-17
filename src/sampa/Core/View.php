@@ -41,7 +41,7 @@ abstract class View {
 			case 'tpl':
 				$domain = $this->config->read('framework/app/domain', $_SERVER['HTTP_HOST']);
 				$webpath = $this->config->read('framework/app/web_path', '/');
-				$base = $this->config->read('framework/base/domain', $domain) . $this->config->read('framework/base/path', $webpath);
+				$base = $this->config->read('framework/app/base', '');
 				$cache = new Cache(
 					$this->config->read('framework/cache/driver', Cache::DISABLED),
 					array(
