@@ -118,24 +118,31 @@ class Controller {
 		return true;
 	}
 
-	//returns current uri
-	final protected function get_uri($encode = false) {
+	//returns current url
+	final protected function get_url($qs = false) {
 		if ($this->is_secure())
 			$schema = 'https://';
 		else
 			$schema = 'http://';
+		$uri = $this->get_uri($qs);
+		return "{$schema}{$_SERVER['HTTP_HOST']}{$uri}";
+	}
+
+	//returns current uri
+	final protected function get_uri($qs = false) {
 		$mark = strpos($_SERVER['REQUEST_URI'], '?');
 		if ($mark === false)
 			$uri = $_SERVER['REQUEST_URI'];
 		else
 			$uri = substr($_SERVER['REQUEST_URI'], 0, $mark);
-		if (empty($_SERVER['QUERY_STRING']))
+		if ($qs) {
+			if (empty($_SERVER['QUERY_STRING']))
+				$qs = '';
+			else
+				$qs = "?{$_SERVER['QUERY_STRING']}";
+		} else
 			$qs = '';
-		else
-			$qs .= "?{$_SERVER['QUERY_STRING']}";
-		if ($encode)
-			return urlencode("{$schema}{$_SERVER['HTTP_HOST']}{$uri}{$qs}");
-		return "{$schema}{$_SERVER['HTTP_HOST']}{$uri}{$qs}";
+		return "{$uri}{$qs}";
 	}
 
 	//lazy loading
