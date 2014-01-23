@@ -153,6 +153,8 @@ final class Kernel {
 						throw new Exception\ActionNotFound("Page not found ({$action})", 404);
 				}
 				call_user_func_array(array($controller, $action), $params);
+				if (($reflection->hasMethod('hook')) && ($reflection->getMethod('hook')->isPublic()))
+					$controller->hook($action, $params);
 				$this->response->output();
 				if ($cacheable === true)
 					$cache->set($cache_id, serialize($this->response));
