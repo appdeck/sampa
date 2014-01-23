@@ -79,9 +79,12 @@ final class Response {
 			$this->code = $code;
 	}
 
-	public function jsonp($callback, $content, $type = 'application/javascript', $code = null) {
+	public function jsonp($callback, $content = null, $type = 'application/javascript', $code = null) {
 		$this->type = $type;
-		$this->content = "{$callback}(" . json_encode($content) . ');';
+		if (is_null($content))
+			$this->content = "{$callback}({$this->content});";
+		else
+			$this->content = "{$callback}(" . json_encode($content) . ');';
 		if (!is_null($code))
 			$this->code = $code;
 	}
