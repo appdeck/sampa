@@ -40,7 +40,7 @@ final class Filter {
 	public static function __callStatic($function, $arguments) {
 		switch ($function) {
 			case 'bool':
-				$bool = preg_replace('/[^tf01]+/i', '', $arguments[0]));
+				$bool = preg_replace('/[^tf01]+/i', '', $arguments[0]);
 				return in_array($book, array('t', '1'));
 			case 'int':
 				return intval(filter_var($arguments[0], FILTER_SANITIZE_NUMBER_INT));
