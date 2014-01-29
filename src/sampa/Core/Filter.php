@@ -40,11 +40,12 @@ final class Filter {
 	public static function __callStatic($function, $arguments) {
 		switch ($function) {
 			case 'bool':
-				return preg_replace('/[^tf01]+/i', '', $arguments[0]);
+				$bool = preg_replace('/[^tf01]+/i', '', $arguments[0]));
+				return in_array($book, array('t', '1'));
 			case 'int':
-				return filter_var($arguments[0], FILTER_SANITIZE_NUMBER_INT);
+				return intval(filter_var($arguments[0], FILTER_SANITIZE_NUMBER_INT));
 			case 'float':
-				return filter_var($arguments[0], FILTER_SANITIZE_NUMBER_FLOAT, (FILTER_FLAG_ALLOW_FRACTION | FILTER_FLAG_ALLOW_THOUSAND));
+				return floatval(filter_var($arguments[0], FILTER_SANITIZE_NUMBER_FLOAT, (FILTER_FLAG_ALLOW_FRACTION | FILTER_FLAG_ALLOW_THOUSAND)));
 			case 'string':
 				return filter_var($arguments[0], FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_LOW | FILTER_FLAG_NO_ENCODE_QUOTES);
 			case 'notags':
