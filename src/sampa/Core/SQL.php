@@ -140,19 +140,13 @@ final class SQL {
 				if (isset($this->cache[$this->id]))
 					$this->statement = $this->cache[$this->id];
 				else {
-					if (count($markers) == 0)
-						$this->statement = $this->pdo->query($sql);
-					else
-						$this->statement = $this->pdo->prepare($sql);
+					$this->statement = $this->pdo->prepare($sql);
 					if ($this->statement === false)
 						return false;
 					$this->cache[$this->id] = $this->statement;
 				}
 			} else {
-				if (count($markers) == 0)
-					$this->statement = $this->pdo->query($sql);
-				else
-					$this->statement = $this->pdo->prepare($sql);
+				$this->statement = $this->pdo->prepare($sql);
 				if ($this->statement === false)
 					return false;
 			}
