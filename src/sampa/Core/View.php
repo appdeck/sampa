@@ -75,7 +75,7 @@ abstract class View {
 				$this->tpl->set_environment('WEBPATH', $webpath);
 				$this->tpl->set_environment('URI', $_SERVER['REQUEST_URI']);
 				$this->tpl->set_environment('URL', "{$protocol}{$domain}{$webpath}");
-				$this->tpl->set_environment('SELF', "{$protocol}{$domain}{$_SERVER['REQUEST_URI']}");
+				$this->tpl->set_environment('SELF', "{$protocol}{$domain}{$_SERVER['SCRIPT_NAME']}");
 				return $this->tpl;
 			default:
 				return null;
