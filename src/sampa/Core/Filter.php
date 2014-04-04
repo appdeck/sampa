@@ -47,7 +47,7 @@ final class Filter {
 			case 'float':
 				return floatval(filter_var($arguments[0], FILTER_SANITIZE_NUMBER_FLOAT, (FILTER_FLAG_ALLOW_FRACTION | FILTER_FLAG_ALLOW_THOUSAND)));
 			case 'string':
-				return filter_var($arguments[0], FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_LOW | FILTER_FLAG_NO_ENCODE_QUOTES);
+				return (string)filter_var($arguments[0], FILTER_UNSAFE_RAW, FILTER_FLAG_STRIP_LOW | FILTER_FLAG_NO_ENCODE_QUOTES);
 			case 'notags':
 				return strip_tags(self::string($arguments[0]));
 			case 'email':
