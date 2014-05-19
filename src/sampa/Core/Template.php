@@ -117,8 +117,11 @@ final class Template {
 		$bfr = "<!DOCTYPE html>\n";
 		if (is_null($this->language))
 			$bfr .= "<html lang=\"en-us\"";
-		else
-			$bfr .= "<html lang=\"{$this->language}\"";
+		else {
+			$bfr .= '<html lang="';
+			$bfr .= htmlentities($this->language, ENT_QUOTES, $this->charset);
+			$bfr .= '"';
+		}
 		if ((!is_null($this->override)) && (isset($this->override['html'])))
 			$bfr .= " {$this->override['html']}";
 		$bfr .= ">\n";
