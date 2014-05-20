@@ -62,9 +62,14 @@ abstract class View {
 					$this->tpl = new Template($tpl, $cache, $base, $this->response->language);
 				else
 					$this->tpl = new Template("{$tpl}{$app}" . DIRECTORY_SEPARATOR, $cache, $base, $this->response->language);
+
 				if ((!empty($_SERVER['HTTPS'])) && ((strtolower($_SERVER['HTTPS']) === 'on') || (intval($_SERVER['HTTPS']) == 1)))
 					$protocol = 'https://';
 				else if ((!empty($_SERVER['HTTP_HTTPS'])) && ((strtolower($_SERVER['HTTP_HTTPS']) === 'on') || (intval($_SERVER['HTTP_HTTPS']) == 1)))
+					$protocol = 'https://';
+				else if ((!empty($_SERVER['HTTP_X_FORWARDED_PROTO'])) && (strtolower($_SERVER['HTTP_X_FORWARDED_PROTO']) === 'https'))
+					$protocol = 'https://';
+				else if ((!empty($_SERVER['HTTP_X_FORWARDED_SSL'])) && ((strtolower($_SERVER['HTTP_X_FORWARDED_SSL']) === 'on') || (intval($_SERVER['HTTP_X_FORWARDED_SSL']) == 1)))
 					$protocol = 'https://';
 				else if ((!empty($_SERVER['SERVER_PORT'])) && (intval($_SERVER['SERVER_PORT']) == 443))
 					$protocol = 'https://';
