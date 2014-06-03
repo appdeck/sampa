@@ -85,6 +85,10 @@ abstract class View {
 					$this->tpl->set_environment('FULLURL', "{$protocol}{$domain}{$_SERVER['SCRIPT_NAME']}");
 				else
 					$this->tpl->set_environment('FULLURL', "{$protocol}{$domain}{$_SERVER['SCRIPT_NAME']}?{$_SERVER['QUERY_STRING']}");
+				if (empty($_SERVER['QUERY_STRING']))
+					$this->tpl->set_environment('BASEURL', "{$protocol}{$domain}{$_SERVER['REQUEST_URI']}");
+				else
+					$this->tpl->set_environment('BASEURL', "{$protocol}{$domain}" . substr($_SERVER['REQUEST_URI'], 0, (strlen($_SERVER['REQUEST_URI']) - (strlen($_SERVER['QUERY_STRING']) + 1))));
 				return $this->tpl;
 			default:
 				return null;
