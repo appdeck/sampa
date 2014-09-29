@@ -145,6 +145,24 @@ class Controller {
 		return "{$uri}{$qs}";
 	}
 
+	//loads a model
+	final public function load_model($name) {
+		if (substr_compare($name, 'Model', -5) != 0)
+			$name = "{$name}Model";
+		if (!class_exists($name))
+			throw new Exception\ModelNotFound($name);
+		return new $name($this->config, $this->log);
+	}
+
+	//loads a view
+	final public function load_view($name) {
+		if (substr_compare($name, 'View', -4) != 0)
+			$name = "{$name}View";
+		if (!class_exists($name))
+			throw new Exception\ViewNotFound($name);
+		return new $name($this->response, $this->config, $this->log);
+	}
+
 	//lazy loading
 	final public function __get($index) {
 		switch ($index) {
@@ -162,18 +180,14 @@ class Controller {
 				return $this->cookie;
 			case 'model':
 				$class = str_replace('Controller', 'Model', get_class($this));
-				if (!class_exists($class))
-					throw new Exception\ModelNotFound($class);
-				$this->model = new $class($this->config, $this->log);
+				$this->model = $this->load_model($class);
 				return $this->model;
 			case 'session':
 				$this->session = Session::singleton($this->config);
 				return $this->session;
 			case 'view':
 				$class = str_replace('Controller', 'View', get_class($this));
-				if (!class_exists($class))
-					throw new Exception\ViewNotFound($class);
-				$this->view = new $class($this->response, $this->config, $this->log);
+				$this->view = $this->load_view($class);
 				return $this->view;
 			default:
 				return null;
