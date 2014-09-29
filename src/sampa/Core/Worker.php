@@ -16,6 +16,14 @@ namespace sampa\Core;
 abstract class Worker extends Plugin {
 	const CONCURRENT = false;
 
+	protected $name;
+
+	public function name() {
+		if (empty($this->name))
+			return get_class($this);
+		return $this->name;
+	}
+
 	abstract public function run(array $params);
 
 }

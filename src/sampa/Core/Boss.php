@@ -112,20 +112,24 @@ final class Boss {
 		switch ($argv[2]) {
 			case 'start':
 				if (($class::CONCURRENT === false) && (!$this->lock($argv[1]))) {
-					echo "worker cannot run in concurrent mode\n";
+					echo 'worker cannot run in concurrent mode', PHP_EOL;
 					break;
 				}
-				echo 'worker started (' . date('d/m/Y H:i:s') . ")\n";
-				echo "worker name: {$argv[1]}\n";
+				echo 'worker started (', date('d/m/Y H:i:s'), ')', PHP_EOL;
+				echo 'worker name: ', $argv[1], PHP_EOL;
 				$pid = getmypid();
-				echo "worker pid: {$pid}\n";
+				echo 'worker pid: ', $pid, PHP_EOL;
 				$pidf = sys_get_temp_dir() . DIRECTORY_SEPARATOR . "{$argv[1]}.pid";
 				@file_put_contents($pidf, $pid);
-				$time = microtime(true);
 				$worker = new $class;
+				if (function_exists('cli_set_process_title')) {
+					cli_set_process_title($worker->name());
+					echo 'process name: ', $worker->name(), PHP_EOL;
+				}
+				$time = microtime(true);
 				$worker->run(array_slice($argv, 3));
 				$time = (microtime(true) - $time);
-				echo 'worker finished (' . Formater::msec($time) . ")\n";
+				echo 'worker finished (', Formater::msec($time), ')', PHP_EOL;
 				@unlink($pidf);
 				$this->unlock();
 				break;
@@ -133,15 +137,15 @@ final class Boss {
 				$pidf = sys_get_temp_dir() . DIRECTORY_SEPARATOR . "{$argv[1]}.pid";
 				if (is_file($pidf)) {
 					if (($class::CONCURRENT === false) && (!$this->lock($argv[1]))) {
-						echo "worker not running\n";
+						echo 'worker not running', PHP_EOL;
 						break;
 					}
-					echo "worker stop\n";
+					echo 'worker stop', PHP_EOL;
 					$pid = @file_get_contents($pidf);
-					echo "worker pid: {$pid}\n";
+					echo 'worker pid: ', $pid, PHP_EOL;
 					exec("kill -9 {$pid}");
 				} else
-					echo "worker not running\n";
+					echo 'worker not running', PHP_EOL;
 				break;
 			default:
 				throw new Exception\Worker("Invalid operation '{$argv[2]}'");
