@@ -25,10 +25,12 @@ final class Kernel {
 	public function __construct($environment = null) {
 		$this->time = microtime(true);
 		//defines the environment name
-		if (is_null($environment))
-			define('__ENVIRONMENT__', '');
-		else
-			define('__ENVIRONMENT__', $environment);
+		if (!defined('__SP_ENV__')) {
+			if (is_null($environment))
+				define('__SP_ENV__', '');
+			else
+				define('__SP_ENV__', $environment);
+		}
 	}
 
 	public function __destruct() {
@@ -49,7 +51,7 @@ final class Kernel {
 			if ($config !== false) {
 				if (substr_compare($config, '/', -1, 1) != 0)
 					$config .= '/';
-				define('__CFG__', $config);
+				define('__SP_CFG__', $config);
 			}
 		}
 		//overrides the default log folder
@@ -58,13 +60,13 @@ final class Kernel {
 			if ($log !== false) {
 				if (substr_compare($log, '/', -1, 1) != 0)
 					$log .= '/';
-				define('__LOG__', $log);
+				define('__SP_LOG__', $log);
 			}
 		}
 		//defines the base path to framework
 		define('__SAMPA__', dirname(dirname(__FILE__)));
 		foreach (array('cfg', 'log', 'tpl') as $folder) {
-			$key = '__' . strtoupper($folder) . '__';
+			$key = '__SP_' . strtoupper($folder) . '__';
 			$path = realpath(__SAMPA__ . DIRECTORY_SEPARATOR . $folder . DIRECTORY_SEPARATOR);
 			if ($path === false)
 				$path = __SAMPA__;
@@ -99,7 +101,7 @@ final class Kernel {
 		//sets the default timezone
 		date_default_timezone_set($this->config->read('framework/main/timezone', 'UTC'));
 		//loads the log handler
-		$logfile = sprintf('%s%s-%s-kernel.log', __LOG__, date('Ymd'), $this->config->read('framework/app/id', 'app'));
+		$logfile = sprintf('%s%s-%s-kernel.log', __SP_LOG__, date('Ymd'), $this->config->read('framework/app/id', 'app'));
 		$this->log = new Log($logfile, $this->config->read('framework/log/level', Log::DISABLED), $this->config->read('framework/log/buffered', true));
 		//creates basic response object
 		$this->response = new Response($encoding, $this->config->read('framework/app/web_path', '/'), $this->config->read('framework/app/language', 'en-us'));

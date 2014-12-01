@@ -52,7 +52,7 @@ abstract class View {
 				$app = $this->config->read('framework/app/id', '');
 				$tpl = $this->config->read('framework/app/templates', '');
 				if (empty($tpl))
-					$tpl = __TPL__;
+					$tpl = __SP_TPL__;
 				else {
 					$tpl = realpath($tpl);
 					if (substr_compare($tpl, '/', -1, 1) != 0)

@@ -39,7 +39,7 @@ class Plugin {
 				$this->secure = new Secure($this->config->read('framework/secure/seed', 'sampa-framework'));
 				return $this->secure;
 			case 'log':
-				$logfile = __LOG__ . date('Ymd') . '-' . str_replace('_', '-', strtolower(get_class($this))) . '.log';
+				$logfile = __SP_LOG__ . date('Ymd') . '-' . str_replace('_', '-', strtolower(get_class($this))) . '.log';
 				$this->log = new Log($logfile, $this->config->read('framework/log/level', Log::DISABLED), $this->config->read('framework/log/buffered', true));
 				return $this->log;
 			case 'session':
