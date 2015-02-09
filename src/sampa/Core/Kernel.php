@@ -82,6 +82,8 @@ final class Kernel {
 			$uri = substr($_SERVER['REQUEST_URI'], 0, $pos);
 		if ($this->config->set_app($_SERVER['HTTP_HOST'], $uri) === false)
 			throw new Exception\Boot('Application not found!');
+		//sets locale
+		setlocale(\LC_ALL, $this->config->read('framework/main/locale', 'en_US.UTF8'));
 		//sets output and internal encoding
 		$encoding = $this->config->read('framework/main/encoding', 'UTF-8');
 		mb_http_output($encoding);

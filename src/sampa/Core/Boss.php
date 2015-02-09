@@ -82,9 +82,10 @@ final class Boss {
 		}
 		//loads the framework's configuration
 		$this->config = Config::singleton();
+		//sets locale
+		setlocale(\LC_ALL, $this->config->read('framework/main/locale', 'en_US.UTF8'));
 		//sets output and internal encoding
-		$encoding = $this->config->read('framework/main/encoding', 'UTF-8');
-		mb_internal_encoding($encoding);
+		mb_internal_encoding($this->config->read('framework/main/encoding', 'UTF-8'));
 		//sets the error display
 		ini_set('display_errors', 1);
 		error_reporting(E_ALL);
