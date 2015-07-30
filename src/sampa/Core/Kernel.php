@@ -20,6 +20,9 @@ final class Kernel {
 	private $log;
 	private $config;
 	private $boot = false;
+	private $app_id = '';
+	private $module = null;
+	private $action = null;
 	public $response;
 
 	public function __construct($environment = null) {
@@ -116,15 +119,17 @@ final class Kernel {
 		//parses the request routes
 		$router = new Router($this->config);
 		$router->parse($module, $action, $params);
-		$app_id = $this->config->read('framework/app/id', '');
-		if (empty($app_id))
+		$this->module = $module;
+		$this->app_id = $this->config->read('framework/app/id', '');
+		if (empty($this->app_id))
 			$class = sprintf('App\\%sController', ucfirst($module));
 		else
-			$class = sprintf('App\\%s\\%sController', $app_id, ucfirst($module));
+			$class = sprintf('App\\%s\\%sController', $this->app_id, ucfirst($module));
 		if (!class_exists($class))
 			throw new Exception\ControllerNotFound($class);
 		$controller = new $class($this->response, $this->config, $this->log);
 		$controller->check_alias($action);
+		$this->action = $action;
 		$reflection = new \ReflectionClass($controller);
 		if (($reflection->hasMethod($action)) && ($reflection->getMethod($action)->isPublic())) {
 			if (($reflection->hasMethod('pre')) && ($reflection->getMethod('pre')->isPublic()))
@@ -260,6 +265,18 @@ final class Kernel {
 				$this->log->alert($msg);
 		}
 		return true;
+	}
+
+	public function get_app() {
+		return $this->app_id;
+	}
+
+	public function get_module() {
+		return $this->module;
+	}
+
+	public function get_action() {
+		return $this->action;
 	}
 
 }
