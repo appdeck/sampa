@@ -4,11 +4,11 @@
 *	Base model
 *
 *	@package sampa\Core\Model
-*	@copyright 2013 appdeck
+*	@copyright 2016 appdeck
 *	@link http://github.com/appdeck/sampa
 *	@version 0.1
 *	@since 0.1
-*	@license http://www.gnu.org/licenses/gpl-3.0.html GNU General Public License, version 3
+*
 */
 
 namespace sampa\Core;
@@ -29,7 +29,7 @@ abstract class Model {
 		return $config;
 	}
 
-	final public function __construct(&$config, &$log) {
+	public function __construct(&$config, &$log) {
 		$this->config = $config;
 		$this->log = $log;
 	}

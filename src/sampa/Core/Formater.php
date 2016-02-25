@@ -4,11 +4,11 @@
 *	Data formating
 *
 *	@package sampa\Core\Formater
-*	@copyright 2013 appdeck
+*	@copyright 2016 appdeck
 *	@link http://github.com/appdeck/sampa
 *	@version 0.1
 *	@since 0.1
-*	@license http://www.gnu.org/licenses/gpl-3.0.html GNU General Public License, version 3
+*
 */
 
 namespace sampa\Core;
@@ -22,11 +22,11 @@ final class Formater {
 	}
 
 	public static function size($bytes) {
-		$units = array('B', 'KB', 'MB', 'GB', 'TB'); 
-		$bytes = max($bytes, 0); 
-		$pow = floor(($bytes ? log($bytes) : 0) / log(1024)); 
-		$pow = min($pow, count($units) - 1); 
-		$bytes /= (1 << (10 * $pow)); 
+		$units = array('B', 'KB', 'MB', 'GB', 'TB');
+		$bytes = max($bytes, 0);
+		$pow = floor(($bytes ? log($bytes) : 0) / log(1024));
+		$pow = min($pow, count($units) - 1);
+		$bytes /= (1 << (10 * $pow));
 		return round($bytes, 0) . ' ' . $units[$pow];
 	}
 

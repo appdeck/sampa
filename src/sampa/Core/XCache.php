@@ -4,11 +4,11 @@
 *	XCache abstraction
 *
 *	@package sampa\Core\XCache
-*	@copyright 2013 appdeck
+*	@copyright 2016 appdeck
 *	@link http://github.com/appdeck/sampa
 *	@version 0.1
 *	@since 0.1
-*	@license http://www.gnu.org/licenses/gpl-3.0.html GNU General Public License, version 3
+*
 */
 
 namespace sampa\Core;
@@ -27,22 +27,29 @@ final class XCache {
 	}
 
 	public function extended_set($index, $value, $ttl) {
-		xcache_set($index, $value, $ttl);
+		if (function_exists('xcache_set'))
+			xcache_set($index, $value, $ttl);
 	}
 
 	public function __set($index, $value) {
-		xcache_set($index, $value);
+		if (function_exists('xcache_set'))
+			xcache_set($index, $value);
 	}
 
 	public function __get($index) {
-		return xcache_get($index);
+		if (function_exists('xcache_get'))
+			return xcache_get($index);
+		return null;
 	}
 
 	public function __isset($index) {
-		return xcache_isset($index);
+		if (function_exists('xcache_isset'))
+			return xcache_isset($index);
+		return false;
 	}
 
 	public function __unset($index) {
-		xcache_unset($index);
+		if (function_exists('xcache_unset'))
+			xcache_unset($index);
 	}
 }
