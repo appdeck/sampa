@@ -74,4 +74,4 @@ Authors
 Copyright and license
 ---------------------
 
-Copyright 2013 appdeck under [GPL-3.0](LICENSE).
+Copyright 2016 appdeck under [MIT](LICENSE.md).
