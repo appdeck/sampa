@@ -41,7 +41,7 @@ final class SQL {
 				$options[\PDO::ATTR_PERSISTENT] = true;
 			$this->pdo = new \PDO($dsn, $user, $pass, $options);
 		} catch (\Exception $e) {
-			throw new Exception\DatabaseConnection($e->getMessage());
+			throw new Exception\DatabaseConnection($e->getMessage(), $e->getCode(), $e);
 		}
 	}
 
@@ -154,7 +154,7 @@ final class SQL {
 				$this->bind($markers);
 			return $this->statement->execute();
 		} catch (\Exception $e) {
-			throw new Exception\DatabaseQuery(sprintf('%s (%s)', $e->getMessage(), $sql));
+			throw new Exception\DatabaseQuery(sprintf('%s (%s)', $e->getMessage(), $sql), $e->getCode(), $e);
 		}
 	}
 
@@ -189,7 +189,7 @@ final class SQL {
 			}
 			return $flag;
 		} catch (\Exception $e) {
-			throw new Exception\DatabaseQuery(sprintf('%s (%s)', $e->getMessage(), $sql));
+			throw new Exception\DatabaseQuery(sprintf('%s (%s)', $e->getMessage(), $sql), $e->getCode(), $e);
 		}
 	}
 
@@ -203,7 +203,7 @@ final class SQL {
 		try {
 			return $this->pdo->exec($sql);
 		} catch (\Exception $e) {
-			throw new Exception\DatabaseQuery(sprintf('%s (%s)', $e->getMessage(), $sql));
+			throw new Exception\DatabaseQuery(sprintf('%s (%s)', $e->getMessage(), $sql), $e->getCode(), $e);
 		}
 	}
 
